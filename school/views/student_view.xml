@@ -66,7 +66,7 @@
                                 <field name="phone" placeholder="Phone Number" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="mobile" placeholder="Mobile Number" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="email" placeholder="Email Address" String="Email" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
-                                <field name="website" widget="url" placeholder="e.g. www.serpentcs.com" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
+                                <field name="website" widget="url" placeholder="e.g. www.enmass-erp.com" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="teachr_user_grp" invisible="1"/>
                             </group>
                         </group>
@@ -490,7 +490,7 @@
                                             <group>
                                                 <field name="mother_tongue" widget="selection" placeholder="Mother Tongue" attrs="{'readonly':[('state','=','alumni')]}"/>
                                                 <field name="admission_date" placeholder="Admission Date" attrs="{'readonly':[('state','=','alumni')]}" readonly="1"/>
-                                                <field name="maritual_status" placeholder="Select Maritual Status" attrs="{'readonly':[('state','=','alumni')]}"/>
+                                                <field name="maritual_status" placeholder="Select Marital Status" attrs="{'readonly':[('state','=','alumni')]}"/>
                                             </group>
                                             <newline />
                                             <separator string="Emergency Contact Details" colspan="4" />

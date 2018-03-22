@@ -86,8 +86,7 @@ class StudentFeesRegister(models.Model):
                            'name': rec.name,
                            'date': rec.date,
                            'company_id': rec.company_id.id,
-                           'currency_id':
-                           rec.company_id.currency_id.id or False,
+                           'currency_id': rec.company_id.currency_id.id or False,
                            'journal_id': rec.journal_id.id,
                            'fees_structure_id': rec.fees_structure.id or False}
                     slip_id = slip_obj.create(res)
