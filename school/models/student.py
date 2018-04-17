@@ -58,6 +58,7 @@ class StudentStudent(models.Model):
 
     @api.model
     def create(self, vals):
+        vals['name'] = vals['first_name'] + ' ' + vals['middle'] + ' ' + vals['last']
         '''Method to create user when student is created'''
         if vals.get('pid', _('New')) == _('New'):
             vals['pid'] = self.env['ir.sequence'
@@ -87,6 +88,15 @@ class StudentStudent(models.Model):
             done_student = self.env.ref('school.group_school_student')
             group_list = [done_student.id, emp_grp.id]
             res.user_id.write({'groups_id': [(6, 0, group_list)]})
+        return res
+
+    @api.multi
+    def write(self, vals):
+        res = super(StudentStudent, self).write(vals)
+        for rec in self:
+            temp_name = rec.first_name + ' ' + rec.middle + ' ' + rec.last
+            rec.user_id.write({'name': temp_name})
+
         return res
 
     @api.model
@@ -150,6 +160,9 @@ class StudentStudent(models.Model):
     relation = fields.Many2one('student.relation.master', 'Relation')
 
     admission_date = fields.Date('Admission Date', default=date.today())
+
+    first_name = fields.Char('First Name', required=True,
+                         states={'done': [('readonly', True)]})
     middle = fields.Char('Middle Name', required=True,
                          states={'done': [('readonly', True)]})
     last = fields.Char('Surname', required=True,

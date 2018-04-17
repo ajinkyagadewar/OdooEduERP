@@ -337,8 +337,6 @@
                                                     <h4>
                                                         <a type="open">
                                                             <field name="name" />
-                                                            <field name="middle" />
-                                                            <field name="last" />
                                                             <field name="student_name" invisible="1" />
                                                             <field name="standard_id" invisible="1" />
                                                             <field name="school_id" invisible="1" />
@@ -434,13 +432,14 @@
                                 <group>
                                     <field name="pid" nolabel="1" readonly="1"/>
                                     <br />
-                                    <field name="name" placeholder="First Name" nolabel="1" required="1" attrs="{'readonly':[('state','=','alumni')]}"/>
+                                    <field name="first_name" placeholder="First Name" nolabel="1" required="1" attrs="{'readonly':[('state','=','alumni')]}"/>
                                     <br />
                                     <field name="middle" placeholder="Middle Name" nolabel="1" attrs="{'readonly':[('state','=','alumni')]}"/>
                                     <br />
                                     <field name="last" placeholder="Last Name" nolabel="1" attrs="{'readonly':[('state','=','alumni')]}"/>
                                     <br/>
                                     <field name="active" invisible="1"/>
+                                    <field name="name" invisible="1"/>
                                 </group>
                             </div>
                         </div>
