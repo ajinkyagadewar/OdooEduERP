@@ -134,7 +134,7 @@ class StudentStudent(models.Model):
                                store=True, readonly=True)
     pid = fields.Char('Student ID', required=True,
                       default=lambda self: _('New'),
-                      help='Personal IDentification Number')
+                      help='Personal Identification Number')
     reg_code = fields.Char('Registration Code',
                            help='Student Registration Code')
     student_code = fields.Char('Student Code')
