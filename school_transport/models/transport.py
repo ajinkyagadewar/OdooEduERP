@@ -23,13 +23,13 @@ class HrEmployee(models.Model):
     transport_vehicle = fields.One2many('transport.vehicle',
                                         'driver_id', 'Vehicles')
 
-    @api.constrains('licence_no')
-    def check_licence_number(self):
-        driver = self.search([('licence_no', '=', self.licence_no),
-                              ('id', 'not in', self.ids)])
-        if driver:
-            raise ValidationError(_('''The licence number you have entered
-            already exist. Please enter different licence number!'''))
+    # @api.constrains('licence_no')
+    # def check_licence_number(self):
+    #     driver = self.search([('licence_no', '=', self.licence_no),
+    #                           ('id', 'not in', self.ids)])
+    #     if driver:
+    #         raise ValidationError(_('''The licence number you have entered
+    #         already exist. Please enter different licence number!'''))
 
 
 class TransportPoint(models.Model):

@@ -11,6 +11,7 @@ from dateutil.relativedelta import relativedelta as rd
 from odoo.exceptions import ValidationError
 from lxml import etree
 import json
+import urllib
 
 
 class AttendanceSheet(models.Model):
@@ -77,29 +78,29 @@ class AttendanceSheet(models.Model):
             flag = 1
             while st_dates <= end_dates:
                 res['fields']['attendance_ids'
-                              ]['views'
-                                ]['tree'
-                                  ]['fields'
-                                    ][digits_temp_dict.get(flag)
-                                      ]['string'
-                                        ] = st_dates.day
+                ]['views'
+                ]['tree'
+                ]['fields'
+                ][digits_temp_dict.get(flag)
+                ]['string'
+                ] = st_dates.day
                 st_dates += rd(days=1)
                 flag += 1
             if flag < 32:
                 res['fields']['attendance_ids'
-                              ]['views']['tree'
-                                         ]['fields'
-                                           ][digits_temp_dict.get(flag)
-                                             ]['string'] = ''
+                ]['views']['tree'
+                ]['fields'
+                ][digits_temp_dict.get(flag)
+                ]['string'] = ''
                 doc2 = etree.XML(res['fields']['attendance_ids']['views'
-                                                                 ]['tree'
-                                                                   ]['arch'])
+                                 ]['tree'
+                                 ]['arch'])
                 nodes = doc2.xpath("//field[@name='" +
                                    digits_temp_dict.get(flag) + "']")
                 for node in nodes:
                     node.set('modifiers', json.dumps({'invisible': True}))
                 res['fields']['attendance_ids'
-                              ]['views']['tree']['arch'] = etree.tostring(doc2)
+                ]['views']['tree']['arch'] = etree.tostring(doc2)
         return res
 
 
@@ -179,7 +180,7 @@ class StudentleaveRequest(models.Model):
                               ('reject', 'Reject'),
                               ('approve', 'Approved')], 'Status',
                              default='draft',
-                             track_visibility='onchange',)
+                             track_visibility='onchange', )
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
     teacher_id = fields.Many2one('school.teacher', 'Class Teacher')
@@ -455,17 +456,17 @@ class DailyAttendance(models.Model):
                                             ('state', '=', 'done')])
                 for stud in stud_ids:
                     student_leave = self.env['studentleave.request'
-                                             ].search([('state', '=',
-                                                        'approve'),
-                                                       ('student_id', '=',
-                                                        stud.id),
-                                                       ('standard_id', '=',
-                                                        rec.standard_id.id),
-                                                       ('start_date', '<=',
-                                                        rec.date),
-                                                       ('end_date', '>=',
-                                                        rec.date)
-                                                       ])
+                    ].search([('state', '=',
+                               'approve'),
+                              ('student_id', '=',
+                               stud.id),
+                              ('standard_id', '=',
+                               rec.standard_id.id),
+                              ('start_date', '<=',
+                               rec.date),
+                              ('end_date', '>=',
+                               rec.date)
+                              ])
                     if student_leave:
                         student_list.append({'roll_no': stud.roll_no,
                                              'stud_id': stud.id,
@@ -491,8 +492,8 @@ class DailyAttendance(models.Model):
             domain_month = [('code', '=', date.month)]
             year_search_ids = academic_year_obj.search(domain_year)
             month_search_ids = academic_month_obj.search(domain_month)
-#            for line in daily_attendance_data.student_ids:
-#                line.write({'is_present': True, 'is_absent': False})
+            #            for line in daily_attendance_data.student_ids:
+            #                line.write({'is_present': True, 'is_absent': False})
             domain = [('standard_id', '=',
                        daily_attendance_data.standard_id.id),
                       ('month_id', '=', month_search_ids.id),
@@ -577,7 +578,50 @@ class DailyAttendance(models.Model):
         acadmic_month_obj = self.env['academic.month']
         attendance_sheet_obj = self.env['attendance.sheet']
 
+        # SMS related data
+        client_obj = self.env['sms.smsclient']
+        queue_obj = self.env['sms.smsclient.queue']
+        gateway_ids = client_obj.search([], limit=1)
+        gateway = gateway_ids[0]
+        url = gateway.url
+
         for line in self:
+            for student_id in line.student_ids:
+                # Send message to parent if student is absent
+                prms = {}
+                for p in gateway.property_ids:
+                    if p.type == 'user':
+                        prms[p.name] = p.value
+                    elif p.type == 'password':
+                        prms[p.name] = p.value
+                    elif p.type == 'to':
+                        prms[p.name] = student_id.stud_id.mobile
+                    elif p.type == 'sms':
+                        prms[p.name] = "Hello, your child/ward %s is absent in school today." % student_id.stud_id.student_name
+                    elif p.type == 'extra':
+                        prms[p.name] = p.value
+
+                params = urllib.urlencode(prms)
+                name = url + "?" + params
+
+                data = {
+                    'msg': "Hello, your child/ward %s is absent in school today." % student_id.stud_id.student_name,
+                    'name': name,
+                    'gateway_id': gateway.id,
+                    'state': 'draft',
+                    'mobile': student_id.stud_id.mobile,
+                    'validity': gateway.validity,
+                    'classes': gateway.classes,
+                    'deferred': gateway.deferred,
+                    'priority': gateway.priority,
+                    'coding': gateway.coding,
+                    'tag': gateway.tag,
+                    'nostop': gateway.nostop,
+                }
+
+                if student_id.is_absent:
+                    queue_obj.create(data)
+
             date = datetime.strptime(line.date, "%Y-%m-%d")
             year = date.year
             year_ids = acadmic_year_obj.search([('date_start', '<=', date),
@@ -594,7 +638,7 @@ class DailyAttendance(models.Model):
                 attendance_sheet_id = (att_sheet_ids and att_sheet_ids[0] or
                                        False)
                 if not attendance_sheet_id:
-                    sheet = {'name':  month_data.name + '-' + str(year),
+                    sheet = {'name': month_data.name + '-' + str(year),
                              'standard_id': line.standard_id.id,
                              'user_id': line.user_id.id,
                              'month_id': month_data.id,
