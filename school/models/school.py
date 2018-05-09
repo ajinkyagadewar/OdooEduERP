@@ -515,7 +515,7 @@ class StudentPreviousSchool(models.Model):
 
     previous_school_id = fields.Many2one('student.student', 'Student')
     name = fields.Char('Name', required=True)
-    registration_no = fields.Char('Registration No.', required=True)
+    registration_no = fields.Char('Registration No.')
     admission_date = fields.Date('Admission Date')
     exit_date = fields.Date('Exit Date')
     course_id = fields.Many2one('standard.standard', 'Course', required=True)
