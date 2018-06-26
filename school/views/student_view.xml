@@ -45,7 +45,7 @@
                                 <field name="school_id" placeholder="School" widget="selection" help="School of Student" attrs="{'readonly':['|',('state','in',['alumni','terminate']),('teachr_user_grp','=',True)]}"/>
                             </group>
                             <group string="Standard Information">
-                                <field name="standard_id" placeholder="Standard" readonly="1" domain="[('school_id','=',school_id)]" widget="selection" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
+                                <field name="standard_id" placeholder="Standard" domain="[('school_id','=',school_id)]" widget="selection" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="division_id" placeholder="Division" invisible="1" widget="selection" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                 <field name="medium_id" placeholder="Medium"  readonly="1" widget="selection" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                             </group>
