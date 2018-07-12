@@ -439,7 +439,20 @@ class DailyAttendance(models.Model):
             if 'student_ids' in vals.keys():
                 child = vals.pop('student_ids')
         ret_val = super(DailyAttendance, self).create(vals)
+
         if child != '':
+            for rec in child:
+                if rec[2]['is_present']:
+                    rec[2]['present_num'] = 1
+                    rec[2]['absent_num'] = 0
+                    rec[2]['state'] = 'Present'
+                    rec[2]['class_id'] = vals['standard_id']
+                else:
+                    rec[2]['present_num'] = 0
+                    rec[2]['absent_num'] = 1
+                    rec[2]['state'] = 'Absent'
+                    rec[2]['class_id'] = vals['standard_id']
+
             ret_val.write({'student_ids': child})
         return ret_val
 
@@ -492,8 +505,7 @@ class DailyAttendance(models.Model):
             domain_month = [('code', '=', date.month)]
             year_search_ids = academic_year_obj.search(domain_year)
             month_search_ids = academic_month_obj.search(domain_month)
-            #            for line in daily_attendance_data.student_ids:
-            #                line.write({'is_present': True, 'is_absent': False})
+
             domain = [('standard_id', '=',
                        daily_attendance_data.standard_id.id),
                       ('month_id', '=', month_search_ids.id),
@@ -1051,9 +1063,13 @@ class DailyAttendanceLine(models.Model):
 
     roll_no = fields.Integer('Roll No.', required=True, help='Roll Number')
     standard_id = fields.Many2one('daily.attendance', 'Standard')
+    class_id = fields.Many2one('school.standard', 'Class')
     stud_id = fields.Many2one('student.student', 'Name', required=True)
     is_present = fields.Boolean('Present', help="Check if student is present")
     is_absent = fields.Boolean('Absent', help="Check if student is absent")
+    present_num = fields.Integer('#Present')
+    absent_num = fields.Integer('#Absent')
+    state = fields.Char('Status')
 
     @api.onchange('is_present')
     def onchange_attendance(self):

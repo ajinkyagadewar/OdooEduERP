@@ -246,7 +246,7 @@
                         <notebook colspan="4">
                             <page string="Students">
                                 <field name="student_ids" nolabel="1" colspan="4">
-                                    <tree string="Student Information" editable="top" create="false" delete="false">
+                                    <tree string="Student Information" editable="top" create="false" delete="false" default_order='stud_id'>
                                         <field name="roll_no" required="1" readonly="1"/>
                                         <field name="stud_id" required="1" options="{&quot;no_create&quot;: True}" domain="[('state','=','done')]" readonly="1"/>
                                         <field name="is_present"/>
@@ -308,9 +308,50 @@
                         <field name="roll_no" />
                         <field name="stud_id" />
                     </field>
+                    <field name="total_presence" />
+                    <field name="total_absent" />
                 </tree>
             </field>
         </record>
+
+        <!-- Tree View Of Daily Attendance Line Information -->
+
+        <record id="view_daily_attendance_line_tree" model="ir.ui.view">
+            <field name="name">daily.attendance.line.tree</field>
+            <field name="model">daily.attendance.line</field>
+            <field name="arch" type="xml">
+                <tree string="Daily Attendance Student Information">
+                    <field name="roll_no" />
+                    <field name="standard_id" />
+                    <field name="stud_id" />
+                    <field name="present_num" sum="Total Present"/>
+                    <field name="absent_num" sum="Total Absent"/>
+                    <field name="create_date" />
+                </tree>
+            </field>
+        </record>
+
+        <!-- Graph View Of Daily Attendance Information -->
+
+        <record id="view_daily_attendance_line_graph" model="ir.ui.view">
+            <field name="name">daily.attendance.line.graph</field>
+            <field name="model">daily.attendance.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Attendance">
+                    <field name="stud_id" />
+                    <field name="state" type="col" />
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Action Of Graph & Tree Views Of Daily Attendance Lines -->
+
+        <record model="ir.actions.act_window" id="action_daily_attendance_line_list">
+            <field name="name">Daily Attendance Lines</field>
+            <field name="res_model">daily.attendance.line</field>
+            <field name="view_mode">tree,pivot</field>
+        </record>
+
 
         <!-- Action Of Form & Tree Views Of Daily Attendance Information -->
 
@@ -322,10 +363,13 @@
         </record>
 
         <!-- Menu Item Of Daily Attendance Sheets -->
-
         <menuitem id="menu_daily_attendances" name="Daily Attendance Sheets" parent="menu_attendance"
                   action="action_daily_attendance_form" groups="school.group_school_administration,school.group_school_teacher" sequence="51"/>
         <!-- Menu of Student Leave Request -->
         <menuitem id="menu_student_leave_req" name="Student Leave Request" parent="menu_attendance" action="action_student_leave_form" groups="school.group_school_administration,school.group_school_teacher,school.group_school_student,school.group_school_parent" sequence="52"/>
+        <!-- Menu of Student Attendance -->
+        <menuitem id="menu_daily_attendance_lines" name="Daily Attendance Line" parent="menu_attendance"
+                  action="action_daily_attendance_line_list" groups="school.group_school_administration,school.group_school_teacher" sequence="53"/>
+
 
 </odoo>
