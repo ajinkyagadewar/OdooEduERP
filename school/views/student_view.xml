@@ -81,7 +81,7 @@
                                     </group>
                                     <group>
                                         <field name="mother_tongue" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"  widget="selection" placeholder="Mother Tounge"/>
-                                        <field name="admission_date" widget="date" placeholder="Admission Date" attrs="{'readonly':[('state','in',['alumni','terminate'])]}" readonly="1"/>
+                                        <field name="admission_date" widget="date" placeholder="Admission Date" attrs="{'readonly':[('state','in',['alumni','terminate'])]}"/>
                                         <field name="maritual_status" attrs="{'readonly':[('state','in',['alumni','terminate'])]}" placeholder="Maritial Status"/>
                                     </group>
                                     <newline />
@@ -280,10 +280,12 @@
                     <field name="pid" />
                     <field name="name" />
                     <field name="student_name" invisible="1" />
-                    <field name="year" widget="selection" />
                     <field name="admission_date" />
+                    <field name="standard_id" />
                     <field name="gender" />
+                    <field name="date_of_birth" />
                     <field name="state" />
+                    <field name="year" widget="selection" />
                     <field name="school_id" />
                 </tree>
             </field>
