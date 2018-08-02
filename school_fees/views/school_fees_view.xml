@@ -247,6 +247,9 @@
                     <field name="name"/>
                     <field name="number"/>
                     <field name="student_id"/>
+                    <field name="total"/>
+                    <field name="paid_amount"/>
+                    <field name="due_amount"/>
                     <field name="date"/>
                     <field name="register_id"/>
                     <field name="state"/>
