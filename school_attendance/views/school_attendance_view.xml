@@ -331,6 +331,18 @@
             </field>
         </record>
 
+    <!-- Search View Of Library Book Request -->
+
+        <record id="view_attendance_line_search" model="ir.ui.view">
+            <field name="name">daily.attendance.line.search</field>
+            <field name="model">daily.attendance.line</field>
+            <field name="arch" type="xml">
+                <search string="Daily Attendance Line">
+                    <filter string="Today" domain="[('create_date','&lt;=',time.strftime('%Y-%m-%d 23:59:59')),('create_date','&gt;=',time.strftime('%Y-%m-%d 00:00:00'))]"/>
+                </search>
+            </field>
+        </record>
+
         <!-- Graph View Of Daily Attendance Information -->
 
         <record id="view_daily_attendance_line_graph" model="ir.ui.view">
@@ -350,6 +362,7 @@
             <field name="name">Daily Attendance Lines</field>
             <field name="res_model">daily.attendance.line</field>
             <field name="view_mode">tree,pivot</field>
+            <field name="search_view_id" ref="view_attendance_line_search"/>
         </record>
 
 
