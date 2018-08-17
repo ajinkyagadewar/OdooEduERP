@@ -196,7 +196,7 @@
                             </h2>
                         <group>
                             <group col="2" string="Information">
-                                <field name="name" placeholder="Description" attrs="{'readonly':[('state','not in','draft')]}"/>
+                                <field name="name" placeholder="Description"/>
                                 <field name="number" readonly="1"/>
                                 <field name="date" attrs="{'readonly':[('state','not in','draft')]}"/>
                             </group>
